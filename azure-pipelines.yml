@@ -2,15 +2,15 @@ trigger:
 - main
 
 pool:
-  name: Default   # name of your self-hosted agent pool
+  name: Default
 
 steps:
+- checkout: self
+
 - task: UseDotNet@2
   inputs:
     packageType: 'sdk'
     version: '8.0.x'
-
-- task: NuGetToolInstaller@1
 
 - task: DotNetCoreCLI@2
   inputs:
@@ -26,10 +26,10 @@ steps:
   inputs:
     command: 'pack'
     packagesToPack: '**/*.csproj'
-    versioningScheme: 'off'
+    outputDir: '$(Build.ArtifactStagingDirectory)'
 
 - task: DotNetCoreCLI@2
   inputs:
     command: 'push'
-    publishVstsFeed: '<Your Feed Name>'
-    searchPatternPush: '**/*.nupkg'
+    publishVstsFeed: 'StringExtensionProject/StringFeed'
+    searchPatternPush: '$(Build.ArtifactStagingDirectory)/*.nupkg'
